@@ -21,7 +21,7 @@ pipeline {
 
         stage('Test') {
             steps {
-                sh 'dotnet test DotNetDevOps.sln --logger "trx;LogFileName=./aspnetapp.trx"'
+                sh 'dotnet test src/DotNetDevOps.sln --logger "trx;LogFileName=./aspnetapp.trx"'
             }
         }
 
