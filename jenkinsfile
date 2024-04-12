@@ -15,13 +15,13 @@ pipeline {
 
         stage('Build') {
             steps {
-                sh 'dotnet build src/aspnetapp/aspnetapp.csproj --configuration Release'
+                sh 'dotnet build DotNetDevOps/DotNetDevOps.csproj --configuration Release'
             }
         }
 
         stage('Test') {
             steps {
-                sh 'dotnet test src/aspnetapp.sln --logger "trx;LogFileName=./aspnetapp.trx"'
+                sh 'dotnet test DotNetDevOps.sln --logger "trx;LogFileName=./aspnetapp.trx"'
             }
         }
 
