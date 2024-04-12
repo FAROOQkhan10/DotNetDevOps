@@ -15,7 +15,7 @@ pipeline {
 
         stage('Build') {
             steps {
-                sh 'dotnet build DotNetDevOps/DotNetDevOps.csproj --configuration Release'
+                sh 'dotnet build src/DotNetDevOps/DotNetDevOps.csproj --configuration Release'
             }
         }
 
