@@ -25,14 +25,27 @@ pipeline {
             }
         }
 
-        stage('Docker Build') {
-            steps {
-                // Build your Docker image
-                script {
-                    docker.build("${IMAGE_NAME}:${IMAGE_TAG}")
+       stage('Build Docker Image') {
+                steps {
+                    script {
+                        def imageName = 'weatherimage'
+                        def imageTag = 'latest'
+                        def container_name = 'weather'
+                        def dockerfilePath = "${WORKSPACE}/Dockerfile"
+                        def existingImageId = sh(script: "docker images -q ${imageName}:${imageTag}", returnStdout: true).trim()
+                        if (existingImageId) {
+                            echo "Existing Docker container name: ${container_name}"
+                            sh "docker rm -f ${container_name}"
+                            echo "Existing Docker image ID: ${existingImageId}"
+                            sh "docker rmi -f ${existingImageId}"
+                            echo "Deleted existing Docker image: ${imageName}:${imageTag}"
+                        }
+                        sh "docker build -t ${imageName}:${imageTag} -f ${dockerfilePath} ${WORKSPACE}"
+                    }
                 }
             }
-        }
+
+
 
         stage('Docker Push') {
             steps {
@@ -53,7 +66,7 @@ pipeline {
                     // Stop the currently running container (if any)
                     sh 'docker rm -f ${IMAGE_NAME} || true'
                     // Run the new container
-                    sh "docker run -d --name aspnetapp -p 8000:80 ${IMAGE_NAME}:${IMAGE_TAG}"
+                    sh "docker run -d --name weather -p 8000:80 ${IMAGE_NAME}:${IMAGE_TAG}"
                 }
             }
         }
