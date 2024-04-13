@@ -20,32 +20,36 @@ pipeline {
             }
         }
 
-        stage('Build Docker Image') {
-            steps {
-                script {
-                    def imageName = 'weatherimage'
-                    def imageTag = 'latest'
-                    def containerName = 'weather'
-                    def dockerfilePath = "${WORKSPACE}/DotNetDevOps/Dockerfile"
-                    def imageFullName = "${imageName}:${imageTag}"
-                    
-                    // Stop and remove existing container if any
-                    sh "docker rm -f ${containerName} || true"
-                    
-                    // Build Docker image
-                    sh "docker build -t ${imageFullName} -f ${dockerfilePath} ${WORKSPACE}"
+       stage('Build Docker Image') {
+                steps {
+                    script {
+                        def imageName = 'weatherimage'
+                        def imageTag = 'latest'
+                        def container_name = 'weather'
+                        def dockerfilePath = "${WORKSPACE}/DotNetDevOps/Dockerfile"
+                        def existingImageId = sh(script: "docker images -q ${imageName}:${imageTag}", returnStdout: true).trim()
+                        if (existingImageId) {
+                            echo "Existing Docker container name: ${container_name}"
+                            sh "docker rm -f ${container_name}"
+                            echo "Existing Docker image ID: ${existingImageId}"
+                            sh "docker rmi -f ${existingImageId}"
+                            echo "Deleted existing Docker image: ${imageName}:${imageTag}"
+                        }
+                        sh "docker build -t ${imageName}:${imageTag} -f ${dockerfilePath} ${WORKSPACE}"
+                    }
                 }
             }
-        }
+
 
         stage('Run Container') {
             steps {
                 script {
+                   
                     def imageId = sh(script: "docker images -q weatherimage:latest", returnStdout: true).trim()
                     echo "Docker image ID: ${imageId}"
-                    
+
                     // Run the new container
-                    sh "docker run -d --name ${containerName} -p 8000:80 ${imageId}"
+                    sh "docker run -d --name weather -p 8000:80 ${imageId}"
                 }
             }
         }
