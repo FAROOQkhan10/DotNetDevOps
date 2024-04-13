@@ -20,25 +20,18 @@ pipeline {
             }
         }
 
-       stage('Build Docker Image') {
-                steps {
-                    script {
-                        def imageName = 'weatherimage'
-                        def imageTag = 'latest'
-                        def container_name = 'weather'
-                        def dockerfilePath = "${WORKSPACE}/DotNetDevOps/Dockerfile"
-                        def existingImageId = sh(script: "docker images -q ${imageName}:${imageTag}", returnStdout: true).trim()
-                        if (existingImageId) {
-                            echo "Existing Docker container name: ${container_name}"
-                            sh "docker rm -f ${container_name}"
-                            echo "Existing Docker image ID: ${existingImageId}"
-                            sh "docker rmi -f ${existingImageId}"
-                            echo "Deleted existing Docker image: ${imageName}:${imageTag}"
-                        }
-                        sh "docker build -t ${imageName}:${imageTag} -f ${dockerfilePath} ${WORKSPACE}"
-                    }
+       stage('Docker Build') {
+            steps {
+                // Build your Docker image                
+                script {
+
+                    def imageName = 'weatherimage'
+                    def imageTag = 'latest'
+
+                    docker.build("${imageName}:${imageTag}")
                 }
             }
+        }
 
 
         stage('Run Container') {
