@@ -1,10 +1,10 @@
 pipeline {
     agent any
 
-    environment {
-        IMAGE_NAME = 'mohammadfarooq/weatherimage'
-        IMAGE_TAG = 'latest'
-    }
+    // environment {
+    //     IMAGE_NAME = 'mohammadfarooq/weatherimage'
+    //     IMAGE_TAG = 'latest'
+    // }
 
     stages {
         stage('Checkout') {
