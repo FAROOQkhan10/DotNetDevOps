@@ -31,7 +31,7 @@ pipeline {
                         def imageName = 'weatherimage'
                         def imageTag = 'latest'
                         def container_name = 'weather'
-                        def dockerfilePath = "${WORKSPACE}/src/DotNetDevOps/Dockerfile"
+                        def dockerfilePath = "${WORKSPACE}/DotNetDevOps/Dockerfile"
                         def existingImageId = sh(script: "docker images -q ${imageName}:${imageTag}", returnStdout: true).trim()
                         if (existingImageId) {
                             echo "Existing Docker container name: ${container_name}"
